@@ -1,0 +1,70 @@
+ <html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HIIT Timer</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  
+  <script>
+    $(document).ready(function() {
+      const restSeconds=75;
+      const trainingSeconds=75;
+      const totalIterations=13;
+      var theTimer;
+      var secondCnt=0;
+      var iterationCnt=1;
+      var currentIteration="rest";
+      
+      function myTimer(){
+        let mtimer=Null;
+      function  s() {mtimer=window.setInterval(updateScreen,1000);};
+        s();
+        return mtimer;
+      };
+      
+      function updateScreen(){
+        let s=`${iterationCnt} ${currentIteration} ${secondCnt}`;
+        $("#result").html(s);
+        secondCnt+=1;
+        if (secondCnt>restSeconds){
+          secondCnt=0;
+          
+          switch (currentIteration){
+            case "rest":
+              currentIteration="move";
+              break;
+            case "move":
+              currentIteration="rest";
+              iterationCnt+=1;
+              break;
+          }
+        }
+        if (iterationCnt>totalIterations){
+          window.clearInterval(theTimer);
+          $("#result").html("You made it!!!");
+        }
+      };
+      
+      $("#startTimerButton").click(function(){
+      theTimer=window.setInterval(updateScreen,1000);
+      });
+      $('#stopTimerButton').click(function(){
+        window.clearInterval(theTimer);
+      });
+                              
+    });
+  </script>
+
+</head>
+
+<body>
+
+  <h1>HIIT Timer</h1>
+  <button type="button" id="startTimerButton">Start Timer</button>
+  <button type="button" id="stopTimerButton">Stop Timer</button>
+  <br>
+  
+  <h1><div id="result">start<br></div></h1>
+  </body>
+
+</html>
