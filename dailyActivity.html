@@ -1,0 +1,81 @@
+ <!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://one-page-tools.w3spaces.com/basicFunctions1.js"></script>
+<script>
+$(document).ready(function () {  
+"use strict";
+let screenName="Daily Activity Log Screen"
+document.title=screenName
+
+
+let thetable=$("<table>")
+thetable.append($("<TR><th>Code</th><th>Action/Value</th><th></th><th></th></tr>"))
+let therow=$("<TR>")
+therow.append($("<td><input type='text' id='thecode'></td>"))
+therow.append($("<td><input type='text' id='theaction'></td>"))
+//therow.append($('<td><button type="button" id="addCode">Add Code</button></td>'))
+therow.append($('<td>').append($("<button>").attr("type","button").attr('id',"addCode").html("Add Code")))
+thetable.append(therow)
+
+let codeSelector=$("<select>").attr('id',"codeSelector")
+codeSelector.append("<option value='DUO'>DUO - do the DUO</option>")
+
+let row2=$("<tr>")
+row2.append(codeSelector)
+row2.append($("<td><input type='text' id='thevalue'></td>"))
+row2.append($('<td>').append($("<button>").attr("type","button").attr('id',"logActivity").html("Log Activity")))
+
+thetable.append(row2)
+
+
+
+$("body").append([
+    $("<H1>").attr('id',"theheader").html(screenName),
+    $("<div>").attr("id","currentDate"),
+    $("<p>").html("Existing Codes"),
+    $("<DIV>").attr('id',"existingCodes").html("go here"),
+    $("<BR>"),
+    thetable,
+    $("<BR>"),
+    $("<button>").attr("type","button").attr('id','downloadButton').html("Download"),
+    $("<PRE>").html($("<DIV>").attr('id',"activityLog").html("Log Entries"))
+
+])
+
+const setScreenDateTime = function setScreenDateTime(){
+    $("#currentDate").html($("<h2>").html(getCurrentDate() + " " + getCurrentTime()+" @"+GetInternetTime()+" .beats"))
+}
+setInterval(setScreenDateTime,1000)
+
+
+$("#addCode").on("click",function() {
+console.log("clicked add code");
+console.log($("#thecode").val() + " " + $("#theaction").val())
+$("#codeSelector").append($("<option>").html($("#thecode").val()+" - "+$("#theaction").val()).val($("#thecode").val()))
+})
+
+$("#logActivity").on("click",function(){
+console.log("clicked log activity")
+console.log($("#codeSelector").val())
+let cur=new Date()
+console.log(cur.toISOString())
+$("#activityLog").html($("#activityLog").html()+"\n"+cur.getTime()+","+
+cur.toLocaleString()+","+$("#codeSelector").val()+
+","+GetInternetTime()+","+$("#thevalue").val()+","+$("#codeSelector").html().trim())
+})
+
+$("#downloadButton").on('click',function(){
+    console.log("clicked download")
+    let blob = new Blob(['test data stuff'], { type: 'text/plain' })
+    this.href = URL.createObjectURL(blob);
+})
+
+ });
+        </script>
+    </head>
+    <body>
+        </body>
+    </html>   
