@@ -1,19 +1,37 @@
- <html>
-
+<!doctype html>
+<html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HIIT Timer</title>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-  
-  <script>
-    $(document).ready(function() {
-      const restSeconds=75;
-      const trainingSeconds=75;
-      const totalIterations=13;
-      var theTimer;
-      var secondCnt=0;
-      var iterationCnt=1;
-      var currentIteration="rest";
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://one-page-tools.w3spaces.com/basicFunctions1.js"></script>
+<script>
+$(document).ready(function () {  
+"use strict";
+// updated 18 Nov 2023
+let screenName="HIIT Timer"
+document.title=screenName
+
+$("body").append([
+    $("<H1>").attr('id',"theheader").html(screenName),
+    $("<label>").attr("for","restSeconds").html("Rest Seconds: "),
+    $("<input>").attr("type","number").attr("id","restSeconds").val(75),
+    $("<BR>"),
+    $("<label>").attr("for","trainingSeconds").html("Training Seconds: "),
+    $("<input>").attr("type","number").attr("id","trainingSeconds").val(75),
+    $("<BR>"),
+    $("<label>").attr("for","totalIterations").html("Total Iterations: "),
+    $("<input>").attr("type","number").attr("id","totalIterations").val(13),
+    $("<BR>"),
+    $("<button>").attr("id","startTimerButton").html("Start"),
+   $("<button>").attr("id","stopTimerButton").html("Stop"),
+   $("<H1>").html($("<div>").attr("id","result"))
+    ])
+
+
+      var theTimer=1
+      var secondCnt=0
+      var iterationCnt=1
+      var currentIteration="rest"
       
       function myTimer(){
         let mtimer=Null;
@@ -26,7 +44,7 @@
         let s=`${iterationCnt} ${currentIteration} ${secondCnt}`;
         $("#result").html(s);
         secondCnt+=1;
-        if (secondCnt>restSeconds){
+        if (secondCnt > $("#restSeconds").val() || secondCnt > $("#trainingSeconds").val()){
           secondCnt=0;
           
           switch (currentIteration){
@@ -39,7 +57,10 @@
               break;
           }
         }
-        if (iterationCnt>totalIterations){
+        if (iterationCnt>$("#totalIterations").val()){
+          secondCnt=0
+          iterationCnt=1
+          currentIteration="rest"
           window.clearInterval(theTimer);
           $("#result").html("You made it!!!");
         }
@@ -51,20 +72,10 @@
       $('#stopTimerButton').click(function(){
         window.clearInterval(theTimer);
       });
-                              
-    });
-  </script>
 
-</head>
-
-<body>
-
-  <h1>HIIT Timer</h1>
-  <button type="button" id="startTimerButton">Start Timer</button>
-  <button type="button" id="stopTimerButton">Stop Timer</button>
-  <br>
-  
-  <h1><div id="result">start<br></div></h1>
-  </body>
-
-</html>
+ });
+        </script>
+    </head>
+    <body>
+        </body>
+    </html>   
