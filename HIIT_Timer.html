@@ -7,7 +7,6 @@
 <script>
 $(document).ready(function () {  
 "use strict";
-// updated 18 Nov 2023
 let screenName="HIIT Timer"
 document.title=screenName
 
@@ -24,7 +23,9 @@ $("body").append([
     $("<BR>"),
     $("<button>").attr("id","startTimerButton").html("Start"),
    $("<button>").attr("id","stopTimerButton").html("Stop"),
-   $("<H1>").html($("<div>").attr("id","result"))
+   $("<H1>").html($("<div>").attr("id","result")),
+    $("<BR>"),
+    $("<div>").attr("id","recentRecords")
     ])
 
 
@@ -32,7 +33,14 @@ $("body").append([
       var secondCnt=0
       var iterationCnt=1
       var currentIteration="rest"
-      
+      var startMilliseconds=null
+      var endMilliseconds=null
+ 
+function getDayOfWeek(daynbr){
+const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+return weekday[daynbr]
+} 
+     
       function myTimer(){
         let mtimer=Null;
       function  s() {mtimer=window.setInterval(updateScreen,1000);};
@@ -40,6 +48,68 @@ $("body").append([
         return mtimer;
       };
       
+function displayRecentRecords(){
+if (typeof(Storage) !== "undefined") {
+console.log("local storage is there")
+console.log(localStorage)
+// get all the keys
+let allkeys=[]
+for (let i = 0; i < localStorage.length; i++) {
+  let thekey=localStorage.key(i)
+  console.log(thekey)
+  console.log(thekey.search("HIIT-TIMER-RECORD"))
+  if (thekey.search("HIIT-TIMER-RECORD") > 0){
+    allkeys.push(thekey)
+    }
+}
+    console.log(allkeys)
+// clear recent records
+$("#recentRecords").html(" ")
+let recCnt=0
+
+for (let theKey of allkeys.reverse()) {    
+    //let theKey=localStorage.key(i)
+    console.log(theKey);
+    let theData=JSON.parse(localStorage.getItem(theKey))
+    console.log(typeof theKey)
+    console.log(typeof theData)
+    console.log(theData)
+    console.log(typeof theData.startMilliseconds)
+    //$("#recentRecords").append($("<p>").html(theKey))
+    let sst=new Date(theData.startMilliseconds)
+    let est=new Date(theData.endMilliseconds)
+     $("#recentRecords").append($("<p>").html("start:"+getDayOfWeek(sst.getDay())+" "+sst.toLocaleDateString() +" "+sst.toLocaleTimeString()+" end:"+
+     est.toLocaleTimeString()+" restSeconds:"+theData.restSeconds+" trainSeconds:"+theData.trainSeconds+
+     " iterations:"+theData.iterations))
+     // use first saved record to seed the input values
+     if (recCnt == 0){
+       recCnt=1
+       $("#restSeconds").val(theData.restSeconds)
+       $("#trainingSeconds").val(theData.trainSeconds)
+       $("#totalIterations").val(theData.iterations)
+     }
+  }
+}
+}
+displayRecentRecords()
+
+
+function saveHiit(startMS,endMS,restSec,trainSec,iters){
+if (typeof(Storage) !== "undefined") {
+  // Code for localStorage/sessionStorage.
+  console.log("local storage available")
+  let theObject={ startMilliseconds:startMS , endMilliseconds:endMS, restSeconds: restSec, trainSeconds: trainSec, iterations: iters }
+  console.log(theObject)
+  let theKey=startMS+"_HIIT-TIMER-RECORD"
+  console.log(theKey)
+  localStorage.setItem(theKey,JSON.stringify(theObject))
+} else {
+  console.log("local strage NOT available")
+  // Sorry! No Web Storage support..
+}
+}
+
+
       function updateScreen(){
         let s=`${iterationCnt} ${currentIteration} ${secondCnt}`;
         $("#result").html(s);
@@ -63,10 +133,16 @@ $("body").append([
           currentIteration="rest"
           window.clearInterval(theTimer);
           $("#result").html("You made it!!!");
+          endMilliseconds=Date.now()
+          console.log(endMilliseconds)
+          saveHiit(startMilliseconds,endMilliseconds,$("#restSeconds").val(),$("#trainingSeconds").val(),$("#totalIterations").val())
+          displayRecentRecords()
         }
       };
       
       $("#startTimerButton").click(function(){
+      startMilliseconds=Date.now()
+      console.log(startMilliseconds)
       theTimer=window.setInterval(updateScreen,1000);
       });
       $('#stopTimerButton').click(function(){
