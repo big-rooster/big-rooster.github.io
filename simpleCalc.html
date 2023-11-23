@@ -1,0 +1,90 @@
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>simple caluclator simpleCalc</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      var myResult = 0.0;
+
+      function computeit() {
+        console.log(`start computeit myResult=${myResult}`);
+        let arg1 = $("#arg1").val();
+        let arg2 = $("#arg2").val();
+        let oper = $("#oper").val();
+        
+        arg1 = addResult(arg1);
+        arg2 = addResult(arg2);
+        myResult = evalit(arg1, arg2, oper);
+        
+        //  $("#result").html($("#result").html()+"<br>"+display(arg1,arg2,oper,myResult));
+        $("#result").append("<br>" + display(arg1, arg2, oper, myResult))
+      }
+      $('#computeButton').click(function() {
+        computeit();
+      });
+
+      function addResult(arg) {
+        let functionName = "addResult";
+        console.log(`${functionName}:arg=${arg} len=${arg.length} result=${myResult}`);
+        if (arg.length > 0) {
+          return arg;
+        } else {
+          return myResult;
+        }
+      }
+
+      function display(arg1, arg2, oper, result) {
+        let functionName = "display";
+        console.log(`${functionName}:arg1=${arg1} arg2=${arg2} oper=${oper} result=${result}`);
+        return `${arg1}${oper}${arg2}=${result}`;
+      }
+
+      function evalit(arg1, arg2, oper) {
+        let functionName = "evalit";
+        let a1 = parseFloat(arg1);
+        let a2 = parseFloat(arg2);
+        console.log(`${functionName}:arg1=${arg1} arg2=${arg2} oper=${oper}`);
+        let result = 0.0;
+        switch (oper) {
+          case '+':
+            result = a1 + a2;
+            break;
+          case '-':
+            result = a1 - a2;
+            break;
+          case '*':
+            result = a1 * a2;
+            break;
+          case '/':
+            result = a1 / a2;
+            break;
+        }
+        console.log(`${functionName}:result=${result}`);
+        return result;
+      }
+    });
+  </script>
+
+</head>
+
+<body>
+
+  <h1>Simple calculator simpleCalc</h1>
+  <input type="number" id="arg1" name="arg1">
+  <select id="oper" name="oper">
+    <option value="+">+</option>
+    <option value="-">-</option>
+    <option value="/">/</option>
+    <option value="*">*</option>
+  </select>
+  <input type="number" id="arg2" name="arg2">
+
+  <button type="button" id="computeButton">Compute It</button>
+
+  <div id="result">start<br></div>
+
+</body>
+
+</html>
