@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script>
+$(document).ready(function () {  
+"use strict";
+// program to create monthly calendar for the year entered
+
+function dayHeader(dateObj){
+return "\n" + dateObj.toLocaleString('en-US', {month: 'long'}) + "\n" +
+"Su Mo Tu We Th Fr Sa"
+}
+
+function formatDay(daynum){
+let d=daynum.toFixed().padStart(2," ")
+if (d == " 0"){
+  d="  "
+  }
+return d
+}
+
+function displayCal2(theyear){
+let begdt=new Date(theyear,0,1,0,0,0,0)
+let enddt=new Date(theyear,11,31,0,0,0,0)
+let curdt=new Date(theyear,0,1,0,0,0,0)
+
+let result=[]
+let weekarr=[0,0,0,0,0,0,0]
+// add month and day labels
+$("#theCal").append(dayHeader(curdt)+"\n")
+while (curdt <= enddt){
+  // set date on day
+  weekarr[curdt.getDay()]=curdt.getDate()
+
+  // test date needed to seeing next month
+  let tstdt=new Date(curdt)
+  // set test date to next day
+  tstdt.setDate(curdt.getDate()+1)
+  if (curdt.getDay() == 6 || tstdt.getMonth()!=curdt.getMonth()){
+     //add weeks worth of dates to calendar
+     $("#theCal").append(weekarr.map(formatDay).join(" ")+"\n")
+     //if changing month add header
+     if (tstdt.getMonth()!=curdt.getMonth() && tstdt.getYear()==curdt.getYear()){
+        $("#theCal").append(dayHeader(tstdt)+"\n")
+     }
+    weekarr=[0,0,0,0,0,0,0]
+  }
+curdt.setDate(curdt.getDate()+1)
+}
+
+}
+
+function displayCal3(){
+displayCal2($("#theyear").val())
+}
+
+
+let title="Compute Calendar"
+document.title=title
+$("body").append([$("<h1>").html(title),
+$("<label>").attr("for","theyear").html("Year: "),
+$("<input>").attr("id","theyear").attr("type","number"),
+$("<button>").attr("id","submitYear").html("Submit Year"),
+$("<pre>").html($("<div>").attr("id","theCal"))
+])
+
+$('#submitYear').on('click',displayCal3);
+
+// default the input to this year
+let d=new Date()
+$("#theyear").val(d.getFullYear())
+
+ });
+
+        </script>
+    </head>
+    <body>
+        </body>
+    </html>   
